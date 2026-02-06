@@ -77,6 +77,9 @@ const shouldBuild = () => {
   if (env.OPENCLAW_FORCE_BUILD === "1") {
     return true;
   }
+  if (env.OPENCLAW_SKIP_BUILD === "1") {
+    return false;
+  }
   const stampMtime = statMtime(buildStampPath);
   if (stampMtime == null) {
     return true;

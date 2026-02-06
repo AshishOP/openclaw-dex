@@ -5,6 +5,7 @@ import { formatCliCommand } from "../../cli/command-format.js";
 import { wrapWebContent } from "../../security/external-content.js";
 import { jsonResult, readNumberParam, readStringParam } from "./common.js";
 import { isDDGSProvider, runDDGSSearch, createDDGSSearchConfig } from "./ddgs-search.js";
+import { isSearxProvider, runSearxSearch, resolveSearxConfig } from "./searx-search.js";
 import {
   CacheEntry,
   DEFAULT_CACHE_TTL_MINUTES,
@@ -354,7 +355,7 @@ async function runPerplexitySearch(params: {
   return { content, citations };
 }
 
-async function runWebSearch(params: {
+export async function runWebSearch(params: {
   query: string;
   count: number;
   apiKey: string;
@@ -485,6 +486,33 @@ export function createWebSearchTool(options?: {
           cacheTtlMs: ddgsConfig.cacheTtlMs,
           region: ddgsConfig.region,
           safesearch: ddgsConfig.safesearch,
+        });
+        return jsonResult(result);
+      },
+    };
+  }
+
+  // DEX EDITION: Check if SearX (local search) is configured
+  if (isSearxProvider(options?.config)) {
+    const searxConfig = resolveSearxConfig(options?.config);
+    return {
+      label: "Web Search (Local)",
+      name: "web_search",
+      description: "Search the web using local SearX instance.",
+      parameters: WebSearchSchema,
+      execute: async (_toolCallId, args) => {
+        const params = args as Record<string, unknown>;
+        const query = readStringParam(params, "query", { required: true });
+        const count = readNumberParam(params, "count", { integer: true }) ?? 5;
+        const result = await runSearxSearch({
+          query,
+          count: Math.min(count, MAX_SEARCH_COUNT),
+          timeoutSeconds: resolveTimeoutSeconds(
+            searxConfig.timeoutSeconds,
+            DEFAULT_TIMEOUT_SECONDS,
+          ),
+          cacheTtlMs: resolveCacheTtlMs(searxConfig.cacheTtlMinutes, DEFAULT_CACHE_TTL_MINUTES),
+          baseUrl: searxConfig.baseUrl ?? "http://127.0.0.1:8080",
         });
         return jsonResult(result);
       },

@@ -85,12 +85,8 @@ export function splitMediaFromOutput(raw: string): {
       continue;
     }
 
-    const trimmedStart = line.trimStart();
-    if (!trimmedStart.startsWith("MEDIA:")) {
-      keptLines.push(line);
-      lineOffset += line.length + 1; // +1 for newline
-      continue;
-    }
+    // Checked: line is not inside a fenced block.
+    // We allow MEDIA: tokens to appear anywhere in the line now.
 
     const matches = Array.from(line.matchAll(MEDIA_TOKEN_RE));
     if (matches.length === 0) {

@@ -134,6 +134,13 @@ export const AgentDefaultsSchema = z
       ])
       .optional(),
     heartbeat: HeartbeatSchema,
+    // DEX EDITION: Autonomous behavior settings
+    autonomousDreamMode: z.boolean().optional(),
+    autonomousResearchMode: z.boolean().optional(),
+    autonomousMorningReport: z.boolean().optional(),
+    dreamIdleHours: z.number().int().positive().optional(),
+    researchIdleHours: z.number().int().positive().optional(),
+    morningReportHour: z.number().int().min(0).max(23).optional(),
     maxConcurrent: z.number().int().positive().optional(),
     subagents: z
       .object({

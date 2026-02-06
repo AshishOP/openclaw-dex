@@ -361,7 +361,7 @@ export async function fetchFirecrawlContent(params: {
   };
 }
 
-async function runWebFetch(params: {
+export async function runWebFetch(params: {
   url: string;
   extractMode: ExtractMode;
   maxChars: number;
@@ -412,6 +412,9 @@ async function runWebFetch(params: {
           "User-Agent": params.userAgent,
           "Accept-Language": "en-US,en;q=0.9",
         },
+      },
+      policy: {
+        allowedHostnames: ["localhost", "127.0.0.1"],
       },
     });
     res = result.response;

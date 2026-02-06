@@ -3,6 +3,8 @@ import type { GatewayMessageChannel } from "../utils/message-channel.js";
 import type { AnyAgentTool } from "./tools/common.js";
 import { resolvePluginTools } from "../plugins/tools.js";
 import { resolveSessionAgentId } from "./agent-scope.js";
+import { createNotionTool } from "./skills/notion.js";
+import { createTechNewsTool } from "./skills/tech-news.js";
 import { createAgentsListTool } from "./tools/agents-list-tool.js";
 import { createBrowserTool } from "./tools/browser-tool.js";
 import { createCanvasTool } from "./tools/canvas-tool.js";
@@ -102,6 +104,7 @@ export function createOpenClawTools(options?: {
       agentSessionKey: options?.agentSessionKey,
     }),
     ...(messageTool ? [messageTool] : []),
+    createTechNewsTool(),
     createTtsTool({
       agentChannel: options?.agentChannel,
       config: options?.config,
@@ -146,6 +149,7 @@ export function createOpenClawTools(options?: {
     ...(webSearchTool ? [webSearchTool] : []),
     ...(webFetchTool ? [webFetchTool] : []),
     ...(imageTool ? [imageTool] : []),
+    createNotionTool(),
   ];
 
   const pluginTools = resolvePluginTools({

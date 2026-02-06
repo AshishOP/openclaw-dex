@@ -1,0 +1,37 @@
+{
+  "agents": {
+    "defaults": {
+      "model": "gpt-4o",
+      "autonomous": {
+        "dreamMode": {
+          "enabled": true
+        },
+        "researchMode": {
+          "enabled": true,
+          "morningReport": true
+        },
+        "morningReport": {
+          "enabled": true
+        }
+      }
+    }
+  },
+  "tools": {
+    "web": {
+      "search": {
+        "provider": "searx",
+        "searx": {
+          "baseUrl": "http://127.0.0.1:8080"
+        }
+      }
+    }
+  },
+  "channels": {
+    "whatsapp": {
+      "enabled": true
+    },
+    "discord": {
+      "enabled": true
+    }
+  }
+}

@@ -196,6 +196,19 @@ export type AgentDefaultsConfig = {
      */
     includeReasoning?: boolean;
   };
+  // DEX EDITION: Autonomous behavior settings
+  /** Enable Dream Mode - consolidate learnings when user is idle. Default: true when heartbeat is configured. */
+  autonomousDreamMode?: boolean;
+  /** Enable Research Mode - learn new things overnight. Default: true when heartbeat is configured. */
+  autonomousResearchMode?: boolean;
+  /** Enable Morning Report - summarize overnight activity. Default: true when heartbeat is configured. */
+  autonomousMorningReport?: boolean;
+  /** Hours of user inactivity before Dream Mode triggers. Default: 3. */
+  dreamIdleHours?: number;
+  /** Hours of user inactivity before Research Mode triggers. Default: 6. */
+  researchIdleHours?: number;
+  /** Hour of day (0-23) to send Morning Report. Default: 8. */
+  morningReportHour?: number;
   /** Max concurrent agent runs across all conversations. Default: 1 (sequential). */
   maxConcurrent?: number;
   /** Sub-agent defaults (spawned via sessions_spawn). */

@@ -337,7 +337,7 @@ export type ToolsConfig = {
       /** Enable web search tool (default: true when API key is present). */
       enabled?: boolean;
       /** Search provider ("brave", "perplexity", or "ddgs"). */
-      provider?: "brave" | "perplexity" | "ddgs";
+      provider?: "brave" | "perplexity" | "ddgs" | "searx";
       /** Brave Search API key (optional; defaults to BRAVE_API_KEY env var). */
       apiKey?: string;
       /** Default search results count (1-10). */
@@ -354,6 +354,12 @@ export type ToolsConfig = {
         baseUrl?: string;
         /** Model to use (defaults to "perplexity/sonar-pro"). */
         model?: string;
+      };
+      /** SearX-specific configuration (used when provider="searx"). */
+      searx?: {
+        baseUrl?: string;
+        timeoutSeconds?: number;
+        cacheTtlMinutes?: number;
       };
     };
     fetch?: {

@@ -61,28 +61,40 @@ export function writeCache<T>(
 }
 
 export function withTimeout(signal: AbortSignal | undefined, timeoutMs: number): AbortSignal {
-  if (timeoutMs <= 0) {
-    return signal ?? new AbortController().signal;
-  }
+  // Use a manual controller to ensure compatibility across Node versions/polyfills
+  // This avoids AbortSignal.any() and AbortSignal.timeout() which caused issues
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+
   if (signal) {
-    signal.addEventListener(
+    // If already aborted, abort immediately
+    if (signal.aborted) {
+      clearTimeout(timer);
+      controller.abort();
+    } else if (typeof signal.addEventListener === "function") {
+      // Link upstream abort if possible
+      signal.addEventListener(
+        "abort",
+        () => {
+          clearTimeout(timer);
+          controller.abort();
+        },
+        { once: true },
+      );
+    }
+  }
+
+  // Ensure we clean up the timer if our own controller aborts
+  if (controller.signal && typeof controller.signal.addEventListener === "function") {
+    controller.signal.addEventListener(
       "abort",
       () => {
         clearTimeout(timer);
-        controller.abort();
       },
       { once: true },
     );
   }
-  controller.signal.addEventListener(
-    "abort",
-    () => {
-      clearTimeout(timer);
-    },
-    { once: true },
-  );
+
   return controller.signal;
 }
 
